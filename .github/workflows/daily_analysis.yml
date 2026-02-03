@@ -177,16 +177,7 @@ jobs:
           else
             python main.py
           fi
-      # ==========================================
-      # 新增：上传数据库文件
-      # ==========================================
-      - name: 上传数据库文件
-        uses: actions/upload-artifact@v4
-        if: always()  # 即使失败也上传
-        with:
-          name: stock-analysis-db-${{ github.run_number }}
-          path: data/stock_analysis.db
-          retention-days: 10  # 保留90天（可根据需要调整）
+    
       
       - name: 上传分析报告和日志
         uses: actions/upload-artifact@v4
@@ -205,19 +196,12 @@ jobs:
           echo "=========================================="
           echo "📊 分析完成"
           echo "=========================================="
-          if [ -f "data/stock_analysis.db" ]; then
-            echo "✅ 数据库文件已生成:"
-            ls -lh data/stock_analysis.db
-            echo ""
-            echo "📦 数据库统计信息:"
-            sqlite3 data/stock_analysis.db "SELECT '股票数量: ' || COUNT(DISTINCT stock_code) FROM stock_analysis; SELECT '总记录数: ' || COUNT(*) FROM stock_analysis; SELECT '最新日期: ' || MAX(analysis_date) FROM stock_analysis;"
-          else
-            echo "❌ 未找到数据库文件"
-          fi
-          echo ""
           if [ -d "reports" ] && [ "$(ls -A reports 2>/dev/null)" ]; then
-            echo "📄 生成的报告:"
-            ls -lh reports/
+            echo "生成的报告:"
+            ls -la reports/
+          else
+            echo "❌ 未找到报告文件"
+
             
           fi
           echo ""
